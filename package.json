@@ -1,6 +1,7 @@
 {
   "name": "social-masonry",
   "version": "1.0.0",
+  "type": "module",
   "description": "Beautiful masonry layout for X (Twitter) and Instagram embeds with virtualization support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -75,6 +76,7 @@
     "rollup": "^4.9.6",
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-postcss": "^4.0.2",
+    "tslib": "^2.8.1",
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"
   }

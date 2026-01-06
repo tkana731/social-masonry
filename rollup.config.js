@@ -66,14 +66,22 @@ export default [
     input: 'src/styles.css',
     output: {
       file: 'dist/styles.css',
+      assetFileNames: '[name][extname]',
     },
     plugins: [
       postcss({
-        extract: true,
+        extract: 'styles.css',
         minimize: true,
         sourceMap: true,
       }),
     ],
+    onwarn(warning, warn) {
+      // Suppress empty chunk warning for CSS-only input
+      if (warning.code === 'EMPTY_BUNDLE') return;
+      // Suppress file overwrite warning (expected behavior for CSS extraction)
+      if (warning.code === 'FILE_NAME_CONFLICT') return;
+      warn(warning);
+    },
   },
   
   // Type declarations

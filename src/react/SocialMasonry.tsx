@@ -423,6 +423,7 @@ export const SocialMasonry = forwardRef<SocialMasonryRef, SocialMasonryProps>(
         virtualizationEngine.init();
         return () => virtualizationEngine.destroy();
       }
+      return undefined;
     }, [virtualizationEngine]);
 
     // Handle height change
@@ -476,13 +477,19 @@ export const SocialMasonry = forwardRef<SocialMasonryRef, SocialMasonryProps>(
           const position = positions.get(post.id);
           if (!position) return null;
 
+          // Extract event handlers and adapt types
+          const { onPostClick, onAuthorClick, onMediaClick, ...restCardProps } = cardProps;
+
           return (
             <Card
               key={post.id}
               post={post}
               position={position}
               onHeightChange={handleHeightChange}
-              {...cardProps}
+              onPostClick={onPostClick ? (p, e) => onPostClick(p, e.nativeEvent) : undefined}
+              onAuthorClick={onAuthorClick ? (p, e) => onAuthorClick(p, e.nativeEvent) : undefined}
+              onMediaClick={onMediaClick ? (p, i, e) => onMediaClick(p, i, e.nativeEvent) : undefined}
+              {...restCardProps}
             />
           );
         })}

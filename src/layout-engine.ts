@@ -33,8 +33,6 @@ export class LayoutEngine {
       animationDuration: 300,
       animate: true,
       easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-      containerWidth: options.containerWidth,
-      itemHeights: options.itemHeights,
       ...options,
     };
 
