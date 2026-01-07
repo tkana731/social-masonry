@@ -1,6 +1,6 @@
 {
   "name": "social-masonry",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "Beautiful masonry layout for X (Twitter) and Instagram embeds with virtualization support",
   "main": "dist/index.js",
