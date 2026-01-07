@@ -7,12 +7,9 @@ export type { SocialMasonryRef } from './SocialMasonry';
 export type {
   SocialMasonryProps,
   SocialPost,
-  TwitterPost,
-  InstagramPost,
-  CardConfig,
-  CardVariant,
-  CardTheme,
+  SocialPlatform,
   MasonryConfig,
-  VirtualizationConfig,
+  EmbedConfig,
+  ColumnConfig,
   ItemPosition,
 } from '../types';

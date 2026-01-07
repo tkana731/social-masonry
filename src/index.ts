@@ -1,48 +1,44 @@
 /**
  * Social Masonry
- * Beautiful masonry layout for X (Twitter) and Instagram embeds
- * 
+ * Masonry layout for X (Twitter) and Instagram iframe embeds
+ *
  * @packageDocumentation
  */
 
-// Core
-export { SocialMasonry, createSocialMasonry, default } from './core';
-
-// Engines
+// Layout Engine
 export { LayoutEngine, createLayoutEngine } from './layout-engine';
-export { VirtualizationEngine, createVirtualizationEngine } from './virtualization-engine';
-export { CardRenderer, createCardRenderer } from './card-renderer';
 
 // Types
 export type {
   // Posts
   SocialPost,
-  TwitterPost,
-  InstagramPost,
   SocialPlatform,
   // Config
   SocialMasonryOptions,
+  SocialMasonryProps,
   MasonryConfig,
-  VirtualizationConfig,
-  CardConfig,
-  CardVariant,
-  CardTheme,
+  EmbedConfig,
   ColumnConfig,
   // Events
   MasonryEvents,
   // Internal
   ItemPosition,
   LayoutState,
-  VirtualItem,
-  // React
-  SocialMasonryProps,
 } from './types';
 
 // Utilities
 export {
-  formatNumber,
-  formatRelativeTime,
-  isTwitterPost,
-  isInstagramPost,
+  // URL parsing
+  extractTweetId,
+  extractInstagramId,
+  detectPlatform,
+  getTwitterEmbedUrl,
+  getInstagramEmbedUrl,
+  generatePostId,
+  // Layout
   defaultColumnConfig,
+  getColumnCount,
+  // Constants
+  DEFAULT_TWITTER_HEIGHT,
+  DEFAULT_INSTAGRAM_HEIGHT,
 } from './utils';

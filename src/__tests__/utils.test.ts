@@ -1,79 +1,95 @@
 import { describe, it, expect } from 'vitest';
-import { isTwitterPost, isInstagramPost, formatNumber, getColumnCount } from '../utils';
-import type { TwitterPost, InstagramPost, ColumnConfig } from '../types';
+import {
+  extractTweetId,
+  extractInstagramId,
+  detectPlatform,
+  generatePostId,
+  getColumnCount,
+  getTwitterEmbedUrl,
+  getInstagramEmbedUrl,
+} from '../utils';
+import type { SocialPost, ColumnConfig } from '../types';
 
-describe('isTwitterPost', () => {
-  it('should return true for Twitter posts', () => {
-    const post: TwitterPost = {
-      id: '1',
-      platform: 'twitter',
-      url: 'https://twitter.com/test/status/1',
-      author: { username: 'test', displayName: 'Test' },
-      content: { text: 'Hello' },
-      createdAt: new Date().toISOString(),
-    };
-    expect(isTwitterPost(post)).toBe(true);
+describe('extractTweetId', () => {
+  it('should extract tweet ID from twitter.com URL', () => {
+    expect(extractTweetId('https://twitter.com/user/status/1234567890')).toBe('1234567890');
   });
 
-  it('should return false for Instagram posts', () => {
-    const post: InstagramPost = {
-      id: '1',
-      platform: 'instagram',
-      url: 'https://instagram.com/p/test1',
-      author: { username: 'test' },
-      content: {},
-      media: { type: 'image', url: 'https://example.com/image.jpg' },
-      createdAt: new Date().toISOString(),
-    };
-    expect(isTwitterPost(post)).toBe(false);
+  it('should extract tweet ID from x.com URL', () => {
+    expect(extractTweetId('https://x.com/user/status/9876543210')).toBe('9876543210');
+  });
+
+  it('should return null for invalid URLs', () => {
+    expect(extractTweetId('https://example.com')).toBeNull();
+    expect(extractTweetId('')).toBeNull();
   });
 });
 
-describe('isInstagramPost', () => {
-  it('should return true for Instagram posts', () => {
-    const post: InstagramPost = {
-      id: '1',
-      platform: 'instagram',
-      url: 'https://instagram.com/p/test1',
-      author: { username: 'test' },
-      content: {},
-      media: { type: 'image', url: 'https://example.com/image.jpg' },
-      createdAt: new Date().toISOString(),
-    };
-    expect(isInstagramPost(post)).toBe(true);
+describe('extractInstagramId', () => {
+  it('should extract post ID from Instagram post URL', () => {
+    expect(extractInstagramId('https://instagram.com/p/ABC123xyz')).toBe('ABC123xyz');
   });
 
-  it('should return false for Twitter posts', () => {
-    const post: TwitterPost = {
-      id: '1',
-      platform: 'twitter',
-      url: 'https://twitter.com/test/status/1',
-      author: { username: 'test', displayName: 'Test' },
-      content: { text: 'Hello' },
-      createdAt: new Date().toISOString(),
-    };
-    expect(isInstagramPost(post)).toBe(false);
+  it('should extract post ID from Instagram reel URL', () => {
+    expect(extractInstagramId('https://instagram.com/reel/XYZ789abc')).toBe('XYZ789abc');
+  });
+
+  it('should return null for invalid URLs', () => {
+    expect(extractInstagramId('https://example.com')).toBeNull();
+    expect(extractInstagramId('')).toBeNull();
   });
 });
 
-describe('formatNumber', () => {
-  it('should format numbers less than 1000 as-is', () => {
-    expect(formatNumber(999)).toBe('999');
-    expect(formatNumber(0)).toBe('0');
-    expect(formatNumber(500)).toBe('500');
+describe('detectPlatform', () => {
+  it('should detect Twitter platform', () => {
+    expect(detectPlatform('https://twitter.com/user/status/123')).toBe('twitter');
+    expect(detectPlatform('https://x.com/user/status/123')).toBe('twitter');
   });
 
-  it('should format thousands with K suffix', () => {
-    expect(formatNumber(1000)).toBe('1K');
-    expect(formatNumber(1500)).toBe('1.5K');
-    expect(formatNumber(10000)).toBe('10K');
-    expect(formatNumber(999999)).toBe('1000K');
+  it('should detect Instagram platform', () => {
+    expect(detectPlatform('https://instagram.com/p/ABC123')).toBe('instagram');
+    expect(detectPlatform('https://instagram.com/reel/ABC123')).toBe('instagram');
   });
 
-  it('should format millions with M suffix', () => {
-    expect(formatNumber(1000000)).toBe('1M');
-    expect(formatNumber(1500000)).toBe('1.5M');
-    expect(formatNumber(10000000)).toBe('10M');
+  it('should return null for unknown URLs', () => {
+    expect(detectPlatform('https://example.com')).toBeNull();
+  });
+});
+
+describe('generatePostId', () => {
+  it('should use provided id if available', () => {
+    const post: SocialPost = { id: 'custom-id', platform: 'twitter', url: 'https://x.com/u/status/123' };
+    expect(generatePostId(post)).toBe('custom-id');
+  });
+
+  it('should generate ID from Twitter URL', () => {
+    const post: SocialPost = { platform: 'twitter', url: 'https://x.com/user/status/123456' };
+    expect(generatePostId(post)).toBe('tw-123456');
+  });
+
+  it('should generate ID from Instagram URL', () => {
+    const post: SocialPost = { platform: 'instagram', url: 'https://instagram.com/p/ABC123' };
+    expect(generatePostId(post)).toBe('ig-ABC123');
+  });
+});
+
+describe('getTwitterEmbedUrl', () => {
+  it('should generate basic embed URL', () => {
+    const url = getTwitterEmbedUrl('123456');
+    expect(url).toContain('platform.twitter.com/embed/Tweet.html');
+    expect(url).toContain('id=123456');
+  });
+
+  it('should include theme parameter', () => {
+    const url = getTwitterEmbedUrl('123456', { theme: 'dark' });
+    expect(url).toContain('theme=dark');
+  });
+});
+
+describe('getInstagramEmbedUrl', () => {
+  it('should generate embed URL', () => {
+    const url = getInstagramEmbedUrl('ABC123');
+    expect(url).toBe('https://www.instagram.com/p/ABC123/embed/');
   });
 });
 
