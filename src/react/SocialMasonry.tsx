@@ -556,7 +556,7 @@ export const SocialMasonry = forwardRef<SocialMasonryRef, SocialMasonryProps>(
         el.style.transform = `translate(${prevPos.x}px, ${prevPos.y}px)`;
 
         // Force reflow
-        el.offsetHeight;
+        void el.offsetHeight;
 
         // Animate to new position
         const delay = animationIndex * staggerDelay;
